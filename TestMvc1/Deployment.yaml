@@ -1,0 +1,37 @@
+﻿apiVersion: v1
+kind: Service
+metadata:
+    name: testmvc1
+spec:
+  ports:
+    - name: http-port
+      port: 60011
+      targetPort: 80
+  selector:
+    app: testmvc1
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: testmvc1
+spec:
+  selector:
+    matchLabels:
+      app: testmvc1
+      tier: frontend
+      track: stable
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: testmvc1
+        tier: frontend
+        track: stable
+    spec:
+      containers:
+        - name: testmvc1
+          image: 127.0.0.1:5000/testmvc1
+          ports:
+            - name: http
+              containerPort: 80

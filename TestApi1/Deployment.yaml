@@ -1,0 +1,37 @@
+﻿apiVersion: v1
+kind: Service
+metadata:
+    name: testapi1
+spec:
+  ports:
+    - name: http-port
+      port: 60001
+      targetPort: 80
+  selector:
+    app: testapi1
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: testapi1
+spec:
+  selector:
+    matchLabels:
+      app: testapi1
+      tier: backend
+      track: stable
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: testapi1
+        tier: backend
+        track: stable
+    spec:
+      containers:
+        - name: testapi1
+          image: 127.0.0.1:5000/testapi1
+          ports:
+            - name: http
+              containerPort: 80
